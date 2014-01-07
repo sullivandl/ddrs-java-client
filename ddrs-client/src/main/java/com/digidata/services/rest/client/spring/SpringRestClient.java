@@ -2,10 +2,12 @@ package com.digidata.services.rest.client.spring;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
@@ -25,9 +27,17 @@ import org.springframework.web.client.RestTemplate;
 
 import com.digidata.services.rest.client.Document;
 import com.digidata.services.rest.client.Entity;
+import com.digidata.services.rest.client.IClientCustomization;
 import com.digidata.services.rest.client.IRestClient;
 import com.digidata.services.rest.client.exceptions.DdrsClientException;
 
+/**
+ * This is an implementation of the client library's {@link IRestClient} using Spring's
+ * RestTemplate and the Jackson JSON Processor (Spring's default JSON processor).
+ * 
+ * @author dan.sullivan
+ *
+ */
 public class SpringRestClient extends RestTemplate implements 
 		IRestClient, ClientHttpRequestFactory {
 
@@ -38,15 +48,22 @@ public class SpringRestClient extends RestTemplate implements
 	private int timeout;
 	private String userAgent;
 	private String baseUri;
+	private boolean compactDefault;
 	
-
+	/**
+	 * Constructs a new client with the DDRS base URI.
+	 * @param baseUri
+	 */
 	public SpringRestClient(String baseUri) {
 		this.baseUri = baseUri;
 		this.httpClientBuilder = HttpClients.custom();
 		this.setRequestFactory(this);
 		this.setErrorHandler(new CustomResponseErrorHandler());
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setContentType(String contentType) {
 		String[] splits = contentType.split("/");
 		if(splits.length != 2)
@@ -54,14 +71,30 @@ public class SpringRestClient extends RestTemplate implements
 		this.mediaType = new MediaType(splits[0], splits[1]);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setUserAgent(String userAgent) {
 		this.userAgent = userAgent;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setTimeout(int timeout) {
 		this.timeout = timeout;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setCompactDefault(boolean compactDefault) {
+		this.compactDefault = compactDefault;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setProxy(String proxyHost, int proxyPort) {
 		if(StringUtils.isEmpty(proxyHost))
 			throw new IllegalArgumentException("The proxyHost parameter cannot be null or empty");
@@ -74,6 +107,10 @@ public class SpringRestClient extends RestTemplate implements
         getHttpClientBuilder().setRoutePlanner(routePlanner);
 	}
 
+	private <T> HttpEntity<T> buildRequest(T entity, Class<T> responseType) {
+		return buildRequest(entity, responseType, this.compactDefault);
+	}
+	
 	private <T> HttpEntity<T> buildRequest(T entity, Class<T> responseType, boolean compact) {
 		HttpHeaders headers = new HttpHeaders();
 		
@@ -94,27 +131,42 @@ public class SpringRestClient extends RestTemplate implements
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <T extends Document> T get(String resource, Class<T> responseType) {
-		return get(resource, responseType, false);
+		return get(resource, responseType, this.compactDefault);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public <T extends Document> T get(String resource, Class<T> responseType,
 			boolean compact) {
 		URI url = buildUrl(resource);
     	return this.exchange(url, HttpMethod.GET, buildRequest("", String.class, compact), responseType).getBody();
 	}
-
-	public <T extends Entity> T put(String resource, T body,
-			Class<T> responseType) {
-		return put(resource, body, responseType, false);
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public OutputStream get(String resource) {
+		// TODO implement download
+		throw new NotImplementedException();
 	}
 
-	public <T extends Entity> T put(String resource, T body,
-			Class<T> responseType, boolean compact) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public <T extends Entity> void put(String resource, T body,
+			Class<T> bodyType) {
 		URI url = buildUrl(resource);
-		return this.exchange(url, HttpMethod.PUT, buildRequest(body, responseType, compact), responseType).getBody();
+		this.exchange(url, HttpMethod.PUT, buildRequest(body, bodyType), bodyType);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void put(String resource, final InputStream stream) {
 		URI url = buildUrl(resource);
 		
@@ -130,31 +182,52 @@ public class SpringRestClient extends RestTemplate implements
 	}
 	
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public <T extends Entity> T post(String resource, Class<T> responseType) {
-		return post(resource, responseType, false);
+		return post(resource, responseType, this.compactDefault);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public <T extends Entity> T post(String resource, Class<T> responseType, boolean compact) {
 		URI url = buildUrl(resource);
 		
 		return this.exchange(url, HttpMethod.POST, buildRequest("", String.class, compact), responseType).getBody();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public <T extends Entity> T post(String resource, T body, Class<T> responseType) {
-		return post(resource, body, responseType, false);
+		return post(resource, body, responseType, this.compactDefault);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public <T extends Entity> T post(String resource, T body, Class<T> responseType, boolean compact) {
 		URI url = buildUrl(resource);
 		
 		return this.exchange(url, HttpMethod.POST, buildRequest(body, responseType, compact), responseType).getBody();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void delete(String resource) {
 		URI url = buildUrl(resource);
-		this.exchange(url, HttpMethod.DELETE, buildRequest("", String.class, false), String.class);
+		this.exchange(url, HttpMethod.DELETE, buildRequest("", String.class), String.class);
 	}
 	
+	/**
+	 * Gets the http client builder. {@link IClientCustomization} instances may use this
+	 * to modify the underlying HttpClient.
+	 * 
+	 * @return the client builder.
+	 */
 	protected HttpClientBuilder getHttpClientBuilder() {
 		// A little protection
 		if(requestFactory != null)
@@ -162,7 +235,10 @@ public class SpringRestClient extends RestTemplate implements
 		
 		return this.httpClientBuilder;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public ClientHttpRequest createRequest(URI uri, HttpMethod httpMethod) throws IOException {
 		if(requestFactory == null) {
 			HttpClient client = httpClientBuilder.build();

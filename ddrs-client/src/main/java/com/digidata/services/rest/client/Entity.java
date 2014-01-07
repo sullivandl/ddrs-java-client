@@ -19,6 +19,11 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 
+/**
+ * Class for entity documents.
+ * @author dan.sullivan
+ *
+ */
 @JsonIgnoreProperties(ignoreUnknown=true)
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=As.PROPERTY, property="type", defaultImpl=Entity.class)
 @JsonSubTypes({
@@ -39,32 +44,74 @@ public class Entity extends Document {
 	private List<Entity> neighbors;		// TODO: figure out what we need to do here
 	private List<Collection> collections;
 	
+	/**
+	 * Constructs a new, empty Entity.
+	 */
 	public Entity() {
 		neighbors = new ArrayList<Entity>();
 		collections = new ArrayList<Collection>();
 	}
 	
+	/**
+	 * Gets the type of this entity.
+	 * @return the type.
+	 */
 	public String getType() {
 		return type;
 	}
+	
+	/**
+	 * Sets the type of this entity.
+	 * @param type the type.
+	 */
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	/**
+	 * Gets whether or not this representation of the entity is compact.
+	 * @return true if this is a compact representation.
+	 */
 	public boolean isCompact() {
 		return compact;
 	}
+	
+	/**
+	 * Sets whether or not this representation of the entity is compact.
+	 * @param compact true if this is a compact representation.
+	 */
 	public void setCompact(boolean compact) {
 		this.compact = compact;
 	}
+	
+	/**
+	 * Gets the neighbors aspect of this entity.
+	 * @return the neighbors
+	 */
 	public List<Entity> getNeighbors() {
 		return neighbors;
 	}
+	
+	/**
+	 * Sets the neighbors aspect of this entity.
+	 * @param neighbors the neighbors.
+	 */
 	public void setNeighbors(List<Entity> neighbors) {
 		this.neighbors = neighbors;
 	}
+	
+	/**
+	 * Gets the collections aspect of this entity.
+	 * @return the collections
+	 */
 	public List<Collection> getCollections() {
 		return collections;
 	}
+	
+	/**
+	 * Sets the collections aspect of this entity.
+	 * @param collections the collections.
+	 */
 	public void setCollections(List<Collection> collections) {
 		this.collections = collections;
 	}

@@ -11,13 +11,25 @@ import com.digidata.services.rest.client.IRestClient;
 import com.digidata.services.rest.client.UsernamePasswordCustomization;
 import com.digidata.services.rest.client.exceptions.DdrsClientException;
 
+/**
+ * Applies the username and password for the {@link SpringRestClient}.
+ * 
+ * @author dan.sullivan
+ *
+ */
 public class SpringUsernamePasswordCustomization extends
 			UsernamePasswordCustomization {
 
+	/**
+	 * @see UsernamePasswordCustomization#UsernamePasswordCustomization(String, String)
+	 */
 	public SpringUsernamePasswordCustomization(String username, String password) {
 		super(username, password);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void customize(IRestClient client) {
 		if(!(client instanceof RestTemplate))

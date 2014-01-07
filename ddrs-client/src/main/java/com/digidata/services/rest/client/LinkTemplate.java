@@ -11,9 +11,19 @@ import com.digidata.services.rest.client.exceptions.DdrsClientException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+/**
+ * Class representing link-template elements.
+ * @author dan.sullivan
+ *
+ */
 @JsonIgnoreProperties(ignoreUnknown=false)
 public class LinkTemplate extends Link {
 
+	/**
+	 * Constructs a map of all the available parameters from this link
+	 * template's href.  All values are initialized to a blank string.
+	 * @return the empty template mappings.
+	 */
 	@JsonIgnore
 	public Map<String, String> getEmptyTemplateMap() {
 		Map<String, String> result = new HashMap<String, String>();
@@ -28,11 +38,25 @@ public class LinkTemplate extends Link {
 		return result;
 	}
 	
+	/**
+	 * Binds a single name value pair to this link template and returns a
+	 * new link with the populated parameters.
+	 * @param name the name of the parameter.
+	 * @param value the value of the parameter.
+	 * @return a new link with bound template parameters.
+	 */
 	public Link bind(String name, String value) {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put(name, value);
 		return bind(map);
 	}
+	
+	/**
+	 * Binds the name value pairs to this link template and returns a 
+	 * new link with the populated parameters.
+	 * @param bindings the name values pairs to bind.
+	 * @return a new link with bound template parameters.
+	 */
 	public Link bind(Map<String, String> bindings) {
 		Link link = new Link();
 		link.setHref(getHref());
@@ -48,7 +72,7 @@ public class LinkTemplate extends Link {
 				encoded = encoded.replace("+", "%20");
 				allBindings.put(key, encoded);
 			} catch(UnsupportedEncodingException e) {
-				throw new DdrsClientException(e.getMessage(), e);	
+				throw new DdrsClientException(e);	
 			}
 		}
 		

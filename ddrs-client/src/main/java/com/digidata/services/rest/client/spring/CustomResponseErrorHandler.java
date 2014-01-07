@@ -11,10 +11,20 @@ import com.digidata.services.rest.client.exceptions.DdrsException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * This is a custom response handler to read in DDRS {@see Error} documents and throw
+ * the appropriate {@see DdrsException}.
+ * 
+ * @author dan.sullivan
+ *
+ */
 class CustomResponseErrorHandler implements ResponseErrorHandler {
 
 	private ResponseErrorHandler defaultHandler = new DefaultResponseErrorHandler();
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void handleError(ClientHttpResponse clientResponse) throws IOException {
 		try {
@@ -26,6 +36,9 @@ class CustomResponseErrorHandler implements ResponseErrorHandler {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean hasError(ClientHttpResponse clientResponse) throws IOException {
 		return defaultHandler.hasError(clientResponse);
