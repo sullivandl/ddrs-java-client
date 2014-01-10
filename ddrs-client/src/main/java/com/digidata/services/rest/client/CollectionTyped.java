@@ -14,7 +14,7 @@ import java.util.List;
 public class CollectionTyped<T extends Entity> extends Collection {
 
 	/**
-	 * Constructs a new stronlgy typed collection.
+	 * Constructs a new strongly typed collection.
 	 */
 	public CollectionTyped() {
 		super();

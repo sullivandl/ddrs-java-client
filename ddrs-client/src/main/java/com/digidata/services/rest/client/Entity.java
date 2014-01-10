@@ -116,6 +116,12 @@ public class Entity extends Document {
 		this.collections = collections;
 	}
 	
+	/**
+	 * Finds a collection with the given rel.
+	 * @param rel the rel of the collection to find.
+	 * @return the collection with the given rel.
+	 * @throws RelNotFoundException if the collection is not found in this entity.
+	 */
 	public Collection findCollection(String rel) {
 		for(Collection c : collections) {
 			if(c.getRel().equals(rel))
@@ -124,6 +130,11 @@ public class Entity extends Document {
 		throw new RelNotFoundException(rel);
 	}
 	
+	/**
+	 * Finds a collection with the given rel if it exists, {@code null} otherwise.
+	 * @param rel the rel of the collection to find.
+	 * @return the collection with the given rel, if found, {@code null} otherwise.
+	 */
 	public Collection findCollectionOrNull(String rel) {
 		try {
 			return findCollection(rel);

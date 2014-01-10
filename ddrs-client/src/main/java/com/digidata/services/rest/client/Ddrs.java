@@ -9,7 +9,7 @@ import com.digidata.services.rest.client.spring.SpringRestFramework;
 /**
  * Provides the entry points to the DigiData REST Service client library.
  * Users must first call {@link #Initialize(IDdrsFactory)} to initialize
- * the library's session context storage and then call {@link #StartFresh()} to
+ * the library's session context storage and then call {@link #startFresh()} to
  * begin a session with the DDRS.
  * 
  * @author dan.sullivan
@@ -37,6 +37,11 @@ public class Ddrs {
 		ddrsFactory = factory;
 	}
 	
+	public static void Initialize(IDdrsFactory factory, IRestFramework restFramework) {
+		ddrsFactory = factory;
+		framework = restFramework;
+	}
+	
 	/**
 	 * Returns true if the {@link #Initialize(IDdrsFactory)} method has been called.
 	 * @return true if library has been initialized; false otherwise. 
@@ -48,9 +53,9 @@ public class Ddrs {
 	/**
 	 * Starts a new session with {@code compact=true}.
 	 * 
-	 * @see #StartFresh(boolean)
+	 * @see #startFresh(boolean)
 	 */
-	public static User StartFresh() {
+	public static User startFresh() {
 		Link me = new Link();
 		me.setHref(USERS_ME);
 		return me.get(User.class);
@@ -62,7 +67,7 @@ public class Ddrs {
 	 * @param compact whether or not to return a compact representation of the {@link User} entity.
 	 * @return the current user entity.
 	 */
-	public static User StartFresh(boolean compact) {
+	public static User startFresh(boolean compact) {
 		Link me = new Link();
 		me.setHref(USERS_ME);
 		return me.get(User.class, compact);

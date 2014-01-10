@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
@@ -125,6 +126,7 @@ public class Link extends DdrsElement {
 	 * GETs the raw data stream found at this link's href.
 	 * @return the data stream from the service.
 	 */
+	@JsonIgnore
 	public OutputStream getData() {
 		return Ddrs.getClient().get(href);
 	}
