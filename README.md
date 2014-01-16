@@ -1,6 +1,6 @@
 # ddrs-java-client
 
-This project is a Java client library for the DigiData REST Service.  It is built on the [Spring RestTemplate][http://docs.spring.io/spring/docs/3.0.x/api/org/springframework/web/client/RestTemplate.html] and [Jackson JSON Processor][http://wiki.fasterxml.com/JacksonHome].  
+This project is a Java client library for the DigiData REST Service.  It is built on the [Spring RestTemplate](http://docs.spring.io/spring/docs/3.0.x/api/org/springframework/web/client/RestTemplate.html) and [Jackson JSON Processor](http://wiki.fasterxml.com/JacksonHome).  
 
 The code here is comprised of the actual client (ddrs-client) and a consuming command line application with a set of simple, functional examples (ddrs-client-examples).
 
@@ -20,7 +20,7 @@ This will compile the client and install it in your local Maven repository - nec
 
 ## Building the Examples
 
-Before building the examples you should set a DDRS username/password in the Application.java.  You can create yourself an account on the DigiData demo site - [LeapDrive][http://www.leapdrive.com].
+Before building the examples you should set a DDRS username/password in the Application.java.  You can create yourself an account on the DigiData demo site - [LeapDrive](http://www.leapdrive.com).
 
 ```java
 	private static final String USERNAME = "<your username>";
@@ -44,4 +44,4 @@ The example application is then run from the command line:
 
 ## Additional Documentation
 
-For additional information on the DigiData REST Service itself and details on how to use this and other clients please refer to the [DDRS Wiki][http://www.leapdrive.com/rest/doc].
+For additional information on the DigiData REST Service itself and details on how to use this and other clients please refer to the [DDRS Wiki](http://www.leapdrive.com/rest/doc).
