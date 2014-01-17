@@ -15,9 +15,9 @@ import com.digidata.services.rest.client.DdrsOptions;
 public class Application {
 
 	// Set your account credentials below
-	private static final String USERNAME = "lduser1";
-	private static final String PASSWORD = "password";
-	private static final String DDRS_URL = "http://core5qa.digidatagrid.com/current/rest";
+	private static final String USERNAME = "<your username>";
+	private static final String PASSWORD = "<your password>";
+	private static final String DDRS_URL = "http://www.leapdrive.com/rest";
 
 	private static final List<IRestExample> examples = new ArrayList<IRestExample>(
 			Arrays.asList(new StartFreshExample(), 
